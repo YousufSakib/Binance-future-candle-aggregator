@@ -1,6 +1,17 @@
 import { instruments } from "./config.js";
 import { getReadableTime } from "./get-readable-time.js";
 
+function checkForMissingTimestamp(candles) {
+    let pre = candles[0][0];
+    for (let i = 1; i < candles.length; i++) {
+        let curr = candles[i][0];
+        if (pre + 60000 !== curr) {
+            throw new Error(`A candle(${getReadableTime(new Date(curr))}) is missing!`);
+        }
+        pre = curr;
+    }
+}
+
 async function fetchCandles({ type, symbol, interval, limit, endTime }) {
 
     let baseUrl;
@@ -43,6 +54,7 @@ export async function loadEntireHistory({ type, pair }) {
     const limit = 1500;
 
     const candles = await fetchCandles({ type, symbol: pair, interval, limit });
+    checkForMissingTimestamp(candles);
 
     let endTime = new Date(candles[0][0]).getTime() - 60 * 1000;
 
@@ -54,6 +66,8 @@ export async function loadEntireHistory({ type, pair }) {
         let candles;
         try {
             candles = await fetchCandles({ type, symbol: pair, interval, limit, endTime });
+            checkForMissingTimestamp(candles);
+
         } catch (err) {
             console.log(err.message);
             await new Promise(resolve => setTimeout(resolve, 5000));
@@ -80,6 +94,7 @@ export async function syncLatestCandles({ pair, type, till }) {
     const limit = 1500;
 
     const candles = await fetchCandles({ type, symbol: pair, interval, limit });
+    checkForMissingTimestamp(candles);
 
     // check-if "till"s value is equal to the current running candle-time;
     if (till === candles.slice(-1)[0][0]) {
@@ -106,6 +121,7 @@ export async function syncLatestCandles({ pair, type, till }) {
         let candles;
         try {
             candles = await fetchCandles({ type, symbol: pair, interval, limit, endTime });
+            checkForMissingTimestamp(candles);
         } catch (err) {
             console.log(err.message);
             await new Promise(resolve => setTimeout(resolve, 5000));
@@ -118,6 +134,7 @@ export async function syncLatestCandles({ pair, type, till }) {
             if (candles[i][0] >= till) {
                 allCandles.push(candles[i]);
             } else {
+                isEnd = true;
                 break;
             }
         }
