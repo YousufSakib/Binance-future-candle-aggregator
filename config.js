@@ -31,6 +31,26 @@ export const pairs = [
     {
         type: instruments.future,
         pair: 'SOLUSDT'
+    },
+    {
+        type: instruments.future,
+        pair: "DOGEUSDT"
+    },
+    {
+        type: instruments.future,
+        pair: "AVAXUSDT"
+    },
+    {
+        type: instruments.future,
+        pair: "LINKUSDT"
+    },
+    {
+        type: instruments.future,
+        pair: "AAVEUSDT"
+    },
+    {
+        type: instruments.future,
+        pair: "FETUSDT"
     }
 ]
 
