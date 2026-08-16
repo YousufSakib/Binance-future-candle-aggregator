@@ -2,6 +2,9 @@ import { instruments } from "./config.js";
 import { getReadableTime } from "./get-readable-time.js";
 
 function checkForMissingTimestamp(candles) {
+    if (!Array.isArray(candles)) throw new Error(`[checkForMissingTimestamp] required an array as parameter.`);
+    if (candles.length === 0) return;
+
     let pre = candles[0][0];
     for (let i = 1; i < candles.length; i++) {
         let curr = candles[i][0];
@@ -80,8 +83,7 @@ export async function loadEntireHistory({ type, pair }) {
         }
 
         endTime = candles[0][0] - 1000 * 60;
-        
-        console.log(`${pair}; endTime: ${getReadableTime(new Date(endTime))}`)
+
         candles.reverse();
         allCandles.push(...candles);
     }
@@ -129,7 +131,7 @@ export async function syncLatestCandles({ pair, type, till }) {
         }
 
         endTime = candles[0][0] - 1000 * 60;
-        
+
         for (let i = candles.length - 1; i >= 0; i--) {
             if (candles[i][0] >= till) {
                 allCandles.push(candles[i]);
