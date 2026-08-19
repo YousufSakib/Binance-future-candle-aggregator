@@ -14,5 +14,5 @@ export async function checkIfCandleDataExist({ pair, type }) {
     const stats = fs.statSync(filePath);
     const fileSize = stats.size;
 
-    return fileSize >= 1024;
+    return fileSize >= 1
 }

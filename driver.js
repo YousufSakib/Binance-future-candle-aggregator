@@ -16,7 +16,7 @@ export async function downloadOrsyncHistoricalData() {
             data = await loadEntireHistory({ pair, type });
         }
         else {
-            const lastestCandleTime = getLastCandleTimestamp({ pair, type })
+            const lastestCandleTime = getLastCandleTimestamp({ pair, type });
             const till = lastestCandleTime + 1000 * 60;
             data = await syncLatestCandles({ pair, type, till });
         }
